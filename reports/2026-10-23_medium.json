@@ -1,0 +1,165 @@
+{
+  "answer": {
+    "picks": [
+      {
+        "rank": 1,
+        "ticker": "XOM",
+        "thesis": "XOM has the strongest risk-adjusted return in the universe on both total and downside volatility, and its trend is intact on both momentum horizons. Its negative beta also diversifies an equity-heavy medium-risk portfolio.",
+        "evidence": [
+          {
+            "metric": "sharpe",
+            "value": 2.3103
+          },
+          {
+            "metric": "sortino",
+            "value": 3.5033
+          },
+          {
+            "metric": "mom_3m",
+            "value": 0.1914
+          },
+          {
+            "metric": "beta",
+            "value": -0.6854
+          }
+        ],
+        "main_risk": "Its 26% volatility and a drawdown of about 20% are above the defensive names, so a reversal of a 64% annualized run could give back gains quickly."
+      },
+      {
+        "rank": 2,
+        "ticker": "KO",
+        "thesis": "KO pairs a high Sharpe ratio with the shallowest drawdown and lowest VaR among the stocks, and both momentum readings are positive. It is the best balance of return and downside control here.",
+        "evidence": [
+          {
+            "metric": "sharpe",
+            "value": 1.6005
+          },
+          {
+            "metric": "sortino",
+            "value": 2.9705
+          },
+          {
+            "metric": "max_drawdown",
+            "value": -0.0787
+          },
+          {
+            "metric": "var_95",
+            "value": -0.0156
+          }
+        ],
+        "main_risk": "A 34% annualized return is unusually high for a 19%-vol name, so returns may mean-revert even if the low-risk profile holds."
+      },
+      {
+        "rank": 3,
+        "ticker": "JNJ",
+        "thesis": "JNJ has the second-best Sharpe and a drawdown of only about 11%, with low volatility and negative beta that add diversification. It sits above its 200-day average with solid 6-month momentum.",
+        "evidence": [
+          {
+            "metric": "sharpe",
+            "value": 1.7284
+          },
+          {
+            "metric": "max_drawdown",
+            "value": -0.1096
+          },
+          {
+            "metric": "ann_vol",
+            "value": 0.2072
+          },
+          {
+            "metric": "mom_6m",
+            "value": 0.172
+          }
+        ],
+        "main_risk": "Its 3-month momentum has turned slightly negative, which may signal the trend is stalling."
+      },
+      {
+        "rank": 4,
+        "ticker": "AAPL",
+        "thesis": "AAPL offers a strong Sharpe with a moderate drawdown and below-market beta, and its 6-month trend is strong. It adds growth exposure that the defensive picks lack.",
+        "evidence": [
+          {
+            "metric": "sharpe",
+            "value": 1.2925
+          },
+          {
+            "metric": "max_drawdown",
+            "value": -0.138
+          },
+          {
+            "metric": "mom_6m",
+            "value": 0.2851
+          },
+          {
+            "metric": "beta",
+            "value": 0.578
+          }
+        ],
+        "main_risk": "3-month momentum has slowed to about 3%, and its 24% volatility is higher than KO or JNJ."
+      },
+      {
+        "rank": 5,
+        "ticker": "JPM",
+        "thesis": "JPM has a reasonable Sharpe with moderate volatility and drawdown, and it is above its 200-day average with positive 6-month momentum. It adds financial-sector diversification at medium risk.",
+        "evidence": [
+          {
+            "metric": "sharpe",
+            "value": 0.4947
+          },
+          {
+            "metric": "ann_vol",
+            "value": 0.2206
+          },
+          {
+            "metric": "max_drawdown",
+            "value": -0.1547
+          },
+          {
+            "metric": "above_sma200",
+            "value": 1.0
+          }
+        ],
+        "main_risk": "Its 3-month momentum is the weakest of the picks, suggesting near-term weakness that could deepen."
+      }
+    ],
+    "avoid": [
+      {
+        "ticker": "MSFT",
+        "reason": "Despite strong recent momentum, its Sharpe is negative and it had the deepest drawdown at about 35%, too much downside for medium risk."
+      },
+      {
+        "ticker": "GLD",
+        "reason": "Negative return and Sharpe, a drawdown of about 26%, and a price below its 200-day average with falling momentum."
+      },
+      {
+        "ticker": "TLT",
+        "reason": "Low volatility, but a negative annualized return gives it the worst Sharpe in the set, and it trades below its 200-day average."
+      }
+    ],
+    "summary": "XOM leads on risk-adjusted return but carries the most volatility among the picks. KO and JNJ are the core: high Sharpe, shallow drawdowns, and negative beta. AAPL adds growth with moderate risk, and JPM rounds out sector diversification but has the weakest short-term trend, so PG is a close lower-volatility alternative."
+  },
+  "eligible": [
+    "AAPL",
+    "COST",
+    "GLD",
+    "GOOGL",
+    "JNJ",
+    "JPM",
+    "KO",
+    "MSFT",
+    "PG",
+    "TLT",
+    "VZ",
+    "WMT",
+    "XOM"
+  ],
+  "attempts": [
+    {
+      "attempt": 1,
+      "seconds": 19.9,
+      "cost_usd": 0.0756447,
+      "turns": 1,
+      "errors": []
+    }
+  ]
+}

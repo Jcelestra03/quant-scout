@@ -65,6 +65,19 @@ That's one period, not evidence of skill.
 - Used the look but not Roblox's logo or name: the corner mark is a generic studded brick.
 - Checked it at desktop and phone width (no sideways scrolling).
 
+## 2026-10-25: Full test pass
+- Live page: all 4 tabs, the top-bar links, the Play button and arrow-key tab switching work; no
+  console errors; every link returns 200.
+- Bug found and fixed: on a 375px phone the How to play tab was 493px wide because long code lines
+  stretched the grid column. Added `min-width: 0` so the code boxes scroll inside themselves.
+- Fresh clone from GitHub, following the How to play steps: install, tests (5/5), `scout.py` with
+  `--risk medium --top 5`, `--as-of 2026-03-02`, and `backtest.py --risk high` all ran.
+- High-risk backtest (momentum-weighted): +0.1% a month, -0.4% over 12 months, worst month -7.2%,
+  versus SPY at +11.9%. Chasing momentum lost in this period, while the low-risk tilt won.
+- Claude at medium risk, top 5: XOM, KO, JNJ, AAPL, JPM, which matches the baseline 5/5 (only the order differs).
+  It passed on try 1 in 19.9 s. XOM went from "avoided" at low risk to #1 at medium risk, which shows the
+  risk level actually changes its judgment. Spot-checked its claims and they hold.
+
 ## Next
 - Run `backtest.py --with-model` (12 Claude calls) to see whether Claude's picks beat the baseline over time.
 - Add a check for comparison claims ("highest", "lowest", "deepest") in `validate()`.
