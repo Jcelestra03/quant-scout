@@ -109,7 +109,8 @@ def baseline_ranking(metrics: pd.DataFrame, risk: str = "low") -> list[str]:
         "high": {"sharpe": 1, "mom_3m": 2, "mom_6m": 2, "ann_return": 1},
     }[risk]
     score = sum(w * metrics[m].rank(pct=True) for m, w in weights.items())
-    return list(score.sort_values(ascending=False).index)
+    # Stable sort over alphabetical order, so tied scores rank alphabetically (matches quant.js).
+    return list(score.sort_index().sort_values(ascending=False, kind="stable").index)
 
 
 def forward_return(prices: pd.DataFrame, ticker: str, as_of: str, days: int) -> float | None:

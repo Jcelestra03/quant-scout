@@ -28,6 +28,13 @@ to either the model or the code.
 - Risk limits: `RISK_RULES` filters tickers before the model sees them.
 - Look-ahead: `compute_metrics()` slices data at `as_of`.
 
+## The web page (docs/)
+- `docs/quant.js` must give the same numbers as `quant.py` and `analyst.eligible_tickers`. Any change to a
+  formula, a risk rule or a weight has to be made in both, and `python check_js.py` must print MATCH.
+- Tied baseline scores rank alphabetically in both versions.
+- Claude's picks on the page come only from `docs/data.json` (written by `publish.py` after `validate()`
+  passes). The page never calls a model.
+
 ## Conventions for agents working in this repo
 - Keep the model's part small. New logic goes in code unless it needs judgment or language.
 - Any new field the model returns must get a check in `validate()` and a test in `test_analyst.py`.

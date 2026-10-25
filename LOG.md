@@ -78,6 +78,32 @@ That's one period, not evidence of skill.
   It passed on try 1 in 19.9 s. XOM went from "avoided" at low risk to #1 at medium risk, which shows the
   risk level actually changes its judgment. Spot-checked its claims and they hold.
 
+## 2026-10-25: Playable in the browser
+Goal: let people who don't use terminals play it from GitHub Pages.
+- Constraint: Pages is static, so it can't run Python or `claude -p`, and putting a key or login in a public
+  page would let anyone use it. Yahoo also blocks requests from other sites' pages.
+- Plan: move the math to the browser and keep Claude as a snapshot.
+  - `publish.py` writes `docs/data.json` (3 years of prices, 122 KB) and runs Claude once per risk level.
+    All three passed validation on try 1 (14.5 s, 13.4 s, 16.6 s). Picks: low KO, JNJ, AAPL; medium KO,
+    JNJ, XOM; high XOM, KO, AAPL.
+  - `docs/quant.js` ports the stats, risk rules, baseline ranking and backtest.
+  - `docs/app.js` adds a Play tab (risk buttons, squad chips, a time-travel slider, a podium, "peek at the
+    future", Claude's call, the risk gate, a stats table). Badges, Leaderboard and the header stats are now
+    built from `data.json`, so they update whenever the snapshot is republished.
+  - Claude's call only shows for the date and full squad it was made on; otherwise it shows a locked card
+    with a "Jump to Claude's day" button, so the page never pretends Claude ranked something it didn't.
+- `check_js.py` compares JS against Python on 4 dates x 16 stocks x 10 stats, plus eligibility and ranking
+  for 3 risk levels.
+  - First run: every stat matched, but 3 rankings differed. Cause: exact score ties (TLT and PG both scored
+    1.40625), and pandas breaks ties in an arbitrary order. Fixed by ranking ties alphabetically in both
+    versions. Now prints MATCH.
+  - Side effect: one April 2026 tie now breaks the other way, so the low-risk backtest is +2.6% a month
+    (+34.1% over 12 months) instead of the +2.8% / +36.8% recorded earlier. It still beats SPY in 8 of 12 months.
+- Tested every control in the browser: risk switching, the slider, benching stocks (with a 3-stock minimum),
+  Claude locking and unlocking, and every tab at desktop and 375px phone width. No console errors.
+  Fixed: dim risk buttons were hard to read, the Medium icon wrapped differently, a duplicate
+  "Team Claude" label, and "these 3" showing when only 2 stocks passed the gate.
+
 ## Next
 - Run `backtest.py --with-model` (12 Claude calls) to see whether Claude's picks beat the baseline over time.
 - Add a check for comparison claims ("highest", "lowest", "deepest") in `validate()`.

@@ -5,7 +5,11 @@ Plain Python computes the risk and return statistics for a watchlist. Claude (ru
 with `claude -p`) ranks the stocks for a chosen risk level and explains its picks, and the code
 rejects any answer whose numbers don't match the data.
 
-**Project page:** https://jcelestra03.github.io/quant-scout/
+**Play it in your browser:** https://jcelestra03.github.io/quant-scout/ (no install, no terminal)
+
+The web version recalculates every stat in JavaScript (`docs/quant.js`, a port of `quant.py`) from a
+price snapshot in `docs/data.json`. Claude can't run in a visitor's browser, so its picks on the page are
+a dated snapshot made by `publish.py`.
 
 > Educational project. It ranks stocks by *past* statistics, which do not predict future
 > returns. It is not financial advice and it does not trade.
@@ -50,6 +54,8 @@ python scout.py --baseline-only          # no model, plain-code ranking only
 python backtest.py                       # 12 monthly replays, baseline vs SPY
 python backtest.py --with-model          # also ask Claude each month (12 calls)
 python -m unittest test_analyst          # validator tests with fake model replies
+python publish.py                        # refresh the web page's prices + Claude picks (3 claude -p calls)
+python check_js.py                       # check docs/quant.js matches quant.py (needs Node.js)
 ```
 
 Reports are written to `reports/`. Edit `watchlist.txt` to change the stocks.
