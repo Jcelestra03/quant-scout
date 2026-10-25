@@ -104,6 +104,23 @@ Goal: let people who don't use terminals play it from GitHub Pages.
   Fixed: dim risk buttons were hard to read, the Medium icon wrapped differently, a duplicate
   "Team Claude" label, and "these 3" showing when only 2 stocks passed the gate.
 
+## 2026-10-25: Bring your own data set
+Goal: let visitors play with their own prices instead of the built-in 16 stocks.
+- `docs/dataset.js` parses a CSV in the browser (the file is never uploaded). It accepts one column per stock
+  or `Date,Ticker,Close` rows; YYYY-MM-DD or M/D/YYYY dates; comma, semicolon or tab separators; and `$` signs.
+  It starts on the first day every stock has a price, carries prices forward over gaps, and explains every
+  fix it makes.
+- The benchmark is no longer hard-coded to SPY: the page guesses it (SPY, VOO, IVV, ^GSPC, QQQ, VTI) and
+  lets you pick another column. `quant.js` and `quant.compute_metrics` both take the benchmark as input.
+- The Play tab got a "Use your own data set" section (drag and drop or choose a file, a format checklist,
+  a sample CSV to download, a benchmark picker, and a button to go back). Claude's card and the Badges tab
+  explain that Claude hasn't seen your file and show the command to get its call: `scout.py --prices`.
+- `quant.load_csv` follows the same rules in Python. On a long-format test file with US dates, semicolons,
+  holes and a VOO benchmark, Python and JS agree exactly (worst difference 0.0).
+- Tested with good and broken files: too short, only 2 stocks, unreadable dates, a negative price, an empty
+  file, plain text, and a column named with HTML code (cleaned to letters and digits, and every name is
+  escaped). Each gives a specific message. Checked at desktop and phone width with no console errors.
+
 ## Next
 - Run `backtest.py --with-model` (12 Claude calls) to see whether Claude's picks beat the baseline over time.
 - Add a check for comparison claims ("highest", "lowest", "deepest") in `validate()`.

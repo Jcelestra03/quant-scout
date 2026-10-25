@@ -4,6 +4,7 @@
     python scout.py --risk medium --top 5
     python scout.py --as-of 2026-03-02      # replay a past date
     python scout.py --baseline-only         # skip the model, plain-code ranking only
+    python scout.py --prices my.csv         # your own daily closes (needs a SPY column, or pass --benchmark)
 
 Educational tool. Past statistics do not predict future returns; not financial advice.
 """
@@ -78,12 +79,20 @@ def main() -> None:
     ap.add_argument("--watchlist", type=Path, default=ROOT / "watchlist.txt")
     ap.add_argument("--model", help="Claude model alias passed to claude -p (e.g. sonnet)")
     ap.add_argument("--baseline-only", action="store_true", help="skip the model")
+    ap.add_argument("--prices", type=Path, help="your own CSV of daily closes instead of downloading the watchlist")
+    ap.add_argument("--benchmark", default=quant.BENCHMARK, help="market column in --prices (default SPY)")
     args = ap.parse_args()
 
-    tickers = read_watchlist(args.watchlist)
-    prices = quant.load_prices(tickers, *price_window(args.as_of))
+    if args.prices:
+        prices = quant.load_csv(args.prices)
+        if args.benchmark not in prices.columns:
+            raise SystemExit(f"No {args.benchmark} column in {args.prices}. Columns: {', '.join(prices.columns)}. "
+                             "Pick one with --benchmark.")
+    else:
+        tickers = read_watchlist(args.watchlist)
+        prices = quant.load_prices(tickers, *price_window(args.as_of))
     as_of = args.as_of or prices.index[-1].date().isoformat()
-    metrics = quant.compute_metrics(prices, as_of)
+    metrics = quant.compute_metrics(prices, as_of, benchmark=args.benchmark)
     eligible = analyst.eligible_tickers(metrics, args.risk)
     baseline = [t for t in quant.baseline_ranking(metrics, args.risk) if t in eligible]
 
@@ -93,7 +102,7 @@ def main() -> None:
         result = analyst.analyze(metrics, args.risk, as_of, args.top, model=args.model)
 
     REPORTS.mkdir(exist_ok=True)
-    stem = REPORTS / f"{as_of}_{args.risk}"
+    stem = REPORTS / (f"{as_of}_{args.risk}" + (f"_{args.prices.stem}" if args.prices else ""))
     report = render_report(as_of, args.risk, metrics, baseline, result)
     stem.with_suffix(".md").write_text(report, encoding="utf-8")
     if result:

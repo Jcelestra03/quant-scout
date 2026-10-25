@@ -32,6 +32,9 @@ to either the model or the code.
 - `docs/quant.js` must give the same numbers as `quant.py` and `analyst.eligible_tickers`. Any change to a
   formula, a risk rule or a weight has to be made in both, and `python check_js.py` must print MATCH.
 - Tied baseline scores rank alphabetically in both versions.
+- Uploaded CSVs: `docs/dataset.js` (browser) and `quant.load_csv` (Python) follow the same rules: wide or
+  long layout, sorted by date, start on the first day every column has a price, carry prices forward over
+  gaps, reject prices at or below zero. Change both together. Uploaded files never leave the browser.
 - Claude's picks on the page come only from `docs/data.json` (written by `publish.py` after `validate()`
   passes). The page never calls a model.
 

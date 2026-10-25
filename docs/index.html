@@ -317,12 +317,50 @@
     }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+    /* Your own data */
+    .source { margin: -10px 0 16px; color: var(--muted); font-size: .93rem; }
+    .source b { color: var(--text); }
+    .upload { margin-bottom: 16px; }
+    .upload summary { cursor: pointer; font: 700 1.15rem "Fredoka"; list-style: none; display: flex; align-items: center; gap: 8px; }
+    .upload summary::-webkit-details-marker { display: none; }
+    .upload summary::after { content: "▾"; margin-left: auto; color: var(--muted); transition: transform .15s; }
+    .upload[open] summary::after { transform: rotate(180deg); }
+    .upload-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-top: 14px; }
+    .drop {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center;
+      border: 3px dashed var(--line); border-radius: var(--radius); padding: 24px 16px; cursor: pointer;
+      background: var(--panel-2); transition: border-color .15s, background .15s; min-height: 170px;
+    }
+    .drop:hover, .drop.over { border-color: var(--green); background: #1f3a2d; }
+    .drop:focus-within { outline: 3px solid var(--yellow); outline-offset: 2px; }
+    .drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    .drop-ico { font-size: 2rem; }
+    .drop-text { font-size: 1.05rem; }
+    .drop-sub { color: var(--muted); font-size: .85rem; }
+    .upload-help h3 { margin: 0 0 6px; font-size: 1.05rem; }
+    .upload-help ul { margin: 0 0 10px; padding-left: 20px; color: var(--muted); font-size: .9rem; }
+    .upload-help li { margin: 4px 0; }
+    .upload-help b { color: var(--text); }
+    .btn-sample { display: inline-flex; flex: none; }
+    .bench-row { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .bench-row label { font-weight: 800; }
+    .bench-row select {
+      font: 700 1rem "Nunito"; background: var(--panel-2); color: var(--text); border: 1px solid var(--line);
+      border-radius: 8px; padding: 6px 10px;
+    }
+    .upload-status { grid-column: 1 / -1; }
+    .upload-status:empty { display: none; }
+    .upload-status.ok { background: #16301f; border: 1px solid #2b6b45; border-radius: 8px; padding: 12px 14px; }
+    .upload-status.error { background: #2a1617; border: 1px solid #5e2a2c; color: #f3c4c5; border-radius: 8px; padding: 12px 14px; }
+    .upload-status ul { margin: 6px 0 0; padding-left: 20px; color: var(--muted); font-size: .88rem; }
+    #use-builtin { grid-column: 1 / -1; justify-self: start; flex: none; }
+
     @media (max-width: 960px) {
       .controls { grid-template-columns: 1fr; }
     }
     @media (max-width: 820px) {
       .game { grid-template-columns: 1fr; }
-      .teams, .badges, .results { grid-template-columns: 1fr; }
+      .teams, .badges, .results, .upload-body { grid-template-columns: 1fr; }
       .topbar nav { display: none; }
     }
     @media (max-width: 480px) {
@@ -458,6 +496,35 @@
     <section class="panel" id="game" role="tabpanel" aria-labelledby="tab-game">
       <h2>Play Quant Scout</h2>
       <p class="lead">No terminal needed. Pick a risk level, choose your squad, and travel through time. Team Code recalculates every stat right here in your browser.</p>
+      <p class="source" id="source"></p>
+
+      <details class="card upload" id="upload-box">
+        <summary>📁 Use your own data set</summary>
+        <div class="upload-body">
+          <label class="drop" id="drop">
+            <input type="file" id="upload" accept=".csv,text/csv,text/plain">
+            <span class="drop-ico" aria-hidden="true">⬆️</span>
+            <span class="drop-text"><b>Choose a CSV file</b> or drag it here</span>
+            <span class="drop-sub">Your file stays on your device. Nothing is uploaded to a server.</span>
+          </label>
+          <div class="upload-help">
+            <h3>What the file needs</h3>
+            <ul>
+              <li><b>Daily closing prices</b>, with a header row.</li>
+              <li>One <b>Date</b> column (like <code>2026-10-23</code> or <code>10/23/2026</code>) and <b>one column per stock</b>, named by ticker. Rows of <code>Date,Ticker,Close</code> work too.</li>
+              <li>At least <b>3 stocks</b> plus a <b>market benchmark</b> column, like SPY.</li>
+              <li>At least <b>one year</b> of trading days (253 rows). Two years or more unlocks the leaderboard.</li>
+            </ul>
+            <p><a class="btn btn-small btn-sample" href="sample-prices.csv" download>⬇ Download a sample CSV</a></p>
+          </div>
+          <div class="bench-row" id="bench-row" hidden>
+            <label for="bench-pick">Market benchmark column</label>
+            <select id="bench-pick"></select>
+          </div>
+          <div class="upload-status" id="upload-status" role="status" aria-live="polite"></div>
+          <button type="button" class="btn btn-small" id="use-builtin" hidden>Back to the built-in data</button>
+        </div>
+      </details>
 
       <div class="controls" data-needs-data>
         <div class="card control">
@@ -607,7 +674,7 @@
         <summary>Month by month</summary>
         <div class="scroll-x">
           <table class="board">
-            <thead><tr><th>Month</th><th>Team Code picked</th><th>Picks</th><th>SPY</th></tr></thead>
+            <thead><tr><th>Month</th><th>Team Code picked</th><th>Picks</th><th id="lb-bench-head">SPY</th></tr></thead>
             <tbody id="lb-months"></tbody>
           </table>
         </div>
@@ -640,6 +707,7 @@ cd quant-scout</code></pre>
           <pre><code>python scout.py                      # low-risk top 3
 python scout.py --risk medium --top 5
 python scout.py --as-of 2026-03-02   # replay a past date
+python scout.py --prices my.csv      # Claude ranks your own data set
 python backtest.py                   # leaderboard replay
 python publish.py                    # refresh this page's data + Claude picks</code></pre>
           <p>Reports are saved in <code>reports/</code>. Edit <code>watchlist.txt</code> to change the stocks.</p>
@@ -653,6 +721,7 @@ python publish.py                    # refresh this page's data + Claude picks</
   <footer>CSS 490 · Artifact 3: AI Inside It · Built with Claude Code</footer>
 
   <script src="quant.js"></script>
+  <script src="dataset.js"></script>
   <script src="app.js"></script>
   <script>
     const tabs = [...document.querySelectorAll('[role="tab"]')];

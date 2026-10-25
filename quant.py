@@ -58,12 +58,42 @@ def load_prices(tickers: list[str], start: str, end: str) -> pd.DataFrame:
     return prices[wanted]
 
 
+def load_csv(path: Path) -> pd.DataFrame:
+    """Read your own prices: wide (Date,AAPL,MSFT,...) or long (Date,Ticker,Close).
+
+    Same rules as docs/dataset.js: sorted by date, starts on the first day every
+    column has a price, and carries prices forward over gaps.
+    """
+    raw = pd.read_csv(path, sep=None, engine="python")
+    cols = {c.lower().replace(" ", "").replace("_", ""): c for c in raw.columns}
+    date_col = next((cols[k] for k in ("date", "day", "timestamp") if k in cols), raw.columns[0])
+    ticker_col = next((cols[k] for k in ("ticker", "symbol", "stock", "name") if k in cols), None)
+    price_col = next((cols[k] for k in ("adjclose", "close", "price", "closeprice") if k in cols), None)
+    raw[date_col] = pd.to_datetime(raw[date_col], format="mixed")
+    if ticker_col and price_col:
+        prices = raw.pivot_table(index=date_col, columns=ticker_col, values=price_col, aggfunc="last")
+    else:
+        prices = raw.set_index(date_col)
+    prices.columns = [str(c).strip().upper() for c in prices.columns]
+    prices = prices.apply(pd.to_numeric, errors="coerce").sort_index()
+    prices = prices.loc[:, prices.notna().mean() >= 0.5]
+    complete = prices.notna().all(axis=1)
+    if not complete.any():
+        raise SystemExit("There's no single day where every column has a price.")
+    prices = prices.loc[complete.idxmax():].ffill()
+    if (prices <= 0).any().any():
+        raise SystemExit("Prices must be above zero.")
+    prices.index.name = None
+    return prices
+
+
 def _max_drawdown(series: pd.Series) -> float:
     running_peak = series.cummax()
     return float((series / running_peak - 1).min())
 
 
-def compute_metrics(prices: pd.DataFrame, as_of: str, lookback_days: int = 252) -> pd.DataFrame:
+def compute_metrics(prices: pd.DataFrame, as_of: str, lookback_days: int = 252,
+                    benchmark: str = BENCHMARK) -> pd.DataFrame:
     """Stats per ticker using only data on or before `as_of` (no look-ahead)."""
     hist = prices.loc[:as_of]
     if len(hist) < lookback_days + 1:
@@ -71,11 +101,11 @@ def compute_metrics(prices: pd.DataFrame, as_of: str, lookback_days: int = 252) 
 
     window = hist.iloc[-(lookback_days + 1):]
     rets = window.pct_change().dropna()
-    bench = rets[BENCHMARK]
+    bench = rets[benchmark]
 
     rows = {}
     for t in prices.columns:
-        if t == BENCHMARK:
+        if t == benchmark:
             continue
         r = rets[t].dropna()
         ann_ret = float((1 + r).prod() ** (TRADING_DAYS / len(r)) - 1)

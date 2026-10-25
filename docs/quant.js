@@ -3,7 +3,8 @@
   defaults, so the page shows the numbers the Python version would.
   Checked against Python by check_js.py.
 
-  Prices come from data.json: { dates: [...], close: { TICKER: [...] } }.
+  Prices come from data.json: { dates: [...], close: { TICKER: [...] }, benchmark: "SPY" }
+  (or an uploaded CSV turned into the same shape by dataset.js).
   Dates are indexes into that array; `asOf` is the index of the last usable day.
 */
 (function (root) {
@@ -58,7 +59,7 @@
   function computeMetrics(data, tickers, asOf, lookback = TRADING_DAYS) {
     if (asOf < lookback) throw new Error("not enough history before this date");
     const start = asOf - lookback;
-    const bench = returns(data.close[BENCHMARK].slice(start, asOf + 1));
+    const bench = returns(data.close[data.benchmark || BENCHMARK].slice(start, asOf + 1));
     const out = {};
     for (const t of tickers) {
       const full = data.close[t].slice(0, asOf + 1);
@@ -151,7 +152,7 @@
       rows.push({
         date: data.dates[i],
         picks,
-        spy: forwardReturn(data, BENCHMARK, i, hold),
+        spy: forwardReturn(data, data.benchmark || BENCHMARK, i, hold),
         eligibleEqWt: avgForward(data, ok, i, hold),
         baseline: avgForward(data, picks, i, hold),
       });

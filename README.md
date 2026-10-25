@@ -11,6 +11,11 @@ The web version recalculates every stat in JavaScript (`docs/quant.js`, a port o
 price snapshot in `docs/data.json`. Claude can't run in a visitor's browser, so its picks on the page are
 a dated snapshot made by `publish.py`.
 
+**Your own data:** on the Play tab, open "Use your own data set" and pick a CSV of daily closes
+(one Date column plus one column per stock and a benchmark like SPY, or `Date,Ticker,Close` rows).
+It is read in the browser and never uploaded. `docs/sample-prices.csv` is a template. For Claude's
+call on the same file, run `python scout.py --prices my.csv`.
+
 > Educational project. It ranks stocks by *past* statistics, which do not predict future
 > returns. It is not financial advice and it does not trade.
 
@@ -51,6 +56,7 @@ python scout.py                          # low-risk top 3 as of the latest close
 python scout.py --risk medium --top 5
 python scout.py --as-of 2026-03-02       # replay a past date
 python scout.py --baseline-only          # no model, plain-code ranking only
+python scout.py --prices my.csv          # your own CSV (add --benchmark VOO if there's no SPY column)
 python backtest.py                       # 12 monthly replays, baseline vs SPY
 python backtest.py --with-model          # also ask Claude each month (12 calls)
 python -m unittest test_analyst          # validator tests with fake model replies

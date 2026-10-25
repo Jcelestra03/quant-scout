@@ -18,6 +18,7 @@ import quant
 from scout import ROOT, read_watchlist
 
 OUT = ROOT / "docs" / "data.json"
+SAMPLE = ROOT / "docs" / "sample-prices.csv"
 
 
 def main() -> None:
@@ -51,6 +52,8 @@ def main() -> None:
         "claude": claude,
     }
     OUT.write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")
+    # Template for the page's "Use your own data set" upload, and for scout.py --prices.
+    prices.round(2).to_csv(SAMPLE, index_label="Date", date_format="%Y-%m-%d")
     print(f"Wrote {OUT.relative_to(ROOT)} ({OUT.stat().st_size // 1024} KB, {len(data['dates'])} days, "
           f"Claude picks for: {', '.join(claude) or 'none'})")
 
