@@ -1,0 +1,116 @@
+{
+  "answer": {
+    "picks": [
+      {
+        "rank": 1,
+        "ticker": "KO",
+        "thesis": "KO pairs strong risk-adjusted returns with the mildest downside in the equity group: the shallowest drawdown, the lowest equity VaR and the lowest volatility. Both momentum windows are positive and price is above its 200-day average.",
+        "evidence": [
+          {
+            "metric": "max_drawdown",
+            "value": -0.0787
+          },
+          {
+            "metric": "var_95",
+            "value": -0.0156
+          },
+          {
+            "metric": "ann_vol",
+            "value": 0.19
+          },
+          {
+            "metric": "sortino",
+            "value": 2.9705
+          },
+          {
+            "metric": "mom_3m",
+            "value": 0.1094
+          }
+        ],
+        "main_risk": "Annualized return of 0.3441 is well above typical defensive levels and may mean-revert, and its negative beta of -0.2749 means it may not track a broad market rally."
+      },
+      {
+        "rank": 2,
+        "ticker": "JNJ",
+        "thesis": "JNJ has the second-best Sharpe among the lower-volatility names and a contained drawdown, with 6-month momentum still positive and price above its 200-day average.",
+        "evidence": [
+          {
+            "metric": "sharpe",
+            "value": 1.7284
+          },
+          {
+            "metric": "max_drawdown",
+            "value": -0.1096
+          },
+          {
+            "metric": "var_95",
+            "value": -0.0187
+          },
+          {
+            "metric": "mom_6m",
+            "value": 0.172
+          }
+        ],
+        "main_risk": "3-month momentum has turned slightly negative at -0.0032, which suggests the strong 6-month trend may be stalling."
+      },
+      {
+        "rank": 3,
+        "ticker": "AAPL",
+        "thesis": "AAPL gives a solid Sharpe with a moderate drawdown and positive momentum on both windows. It is the most diversified-looking pick, with a beta of 0.578.",
+        "evidence": [
+          {
+            "metric": "sharpe",
+            "value": 1.2925
+          },
+          {
+            "metric": "max_drawdown",
+            "value": -0.138
+          },
+          {
+            "metric": "mom_6m",
+            "value": 0.2851
+          },
+          {
+            "metric": "beta",
+            "value": 0.578
+          }
+        ],
+        "main_risk": "Volatility of 0.2402 is the second highest in the eligible set, and 3-month momentum of 0.033 has slowed sharply from the 6-month pace."
+      }
+    ],
+    "avoid": [
+      {
+        "ticker": "XOM",
+        "reason": "Despite the top Sharpe of 2.3103, it has the deepest drawdown (-0.2011), worst VaR (-0.0261) and highest volatility (0.2612), which is a poor fit for a low-risk profile."
+      },
+      {
+        "ticker": "TLT",
+        "reason": "Negative return (-0.0755) and Sharpe (-1.2044), negative momentum, and price below its 200-day average outweigh its low volatility."
+      },
+      {
+        "ticker": "COST",
+        "reason": "Weak risk-adjusted return (sharpe 0.1431), a sizable -0.182 drawdown and slightly negative 6-month momentum."
+      }
+    ],
+    "summary": "KO ranks first because it gives the best balance of downside protection and risk-adjusted return. JNJ follows closely with a higher Sharpe but a deeper drawdown and fading short-term momentum. AAPL takes third for solid returns and trend, but its higher volatility makes it the least defensive of the three, while XOM's superior Sharpe was rejected on downside grounds."
+  },
+  "eligible": [
+    "AAPL",
+    "COST",
+    "JNJ",
+    "JPM",
+    "KO",
+    "PG",
+    "TLT",
+    "XOM"
+  ],
+  "attempts": [
+    {
+      "attempt": 1,
+      "seconds": 14.3,
+      "cost_usd": 0.0675769,
+      "turns": 1,
+      "errors": []
+    }
+  ]
+}

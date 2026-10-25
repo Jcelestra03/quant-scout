@@ -38,6 +38,26 @@ months. Its worst month (-5.2%) was slightly worse than SPY's worst (-5.0%). It 
 JNJ and KO, so it is really a defensive-stocks tilt during a year when those did well.
 That's one period, not evidence of skill.
 
+## 2026-10-25: Getting the CLI to run
+- `claude -p` first failed with "Not logged in". Logging in took a few tries: the setup commands were
+  written in Bash syntax but the terminal was PowerShell, and the Claude desktop app is a packaged
+  Windows app, so `claude.exe` really lives under `AppData\Local\Packages\Claude_...\LocalCache\Roaming\...`.
+  Running `& "<that path>\claude.exe" auth login` and signing in in the browser fixed it.
+- In PowerShell, point the script at the CLI with `$env:CLAUDE_BIN = '<path>'` before `python scout.py`.
+
+## 2026-10-25: First Claude run (low risk, as of 2026-10-23)
+- Eligible after the risk rules: AAPL, COST, JNJ, JPM, KO, PG, TLT, XOM.
+- Claude picked **KO, JNJ, AAPL** and avoided XOM, TLT and COST. Validation passed on the first
+  attempt. It took 14.3 s, and the CLI reported $0.068 (an estimate of the equivalent API price;
+  this ran on Claude Code access, not a paid key).
+- The plain-code baseline picked KO, JNJ, **XOM**, so they agree on 2 of 3. The difference is interesting:
+  the baseline likes XOM's top Sharpe (2.31), but Claude rejected it for a low-risk investor because it has
+  the deepest drawdown, worst VaR and highest volatility in the eligible set. That's the kind of trade-off
+  judgment I wanted the model for.
+- Hand check: Claude's comparison claims ("deepest drawdown", "second highest volatility") were all true.
+  But `validate()` only checks the *numbers* it cites, not words like "highest" or "deepest". That's a gap a
+  future check could close by verifying rank claims against the table.
+
 ## Next
-- Run `scout.py` and `backtest.py --with-model` once the CLI is logged in, and record whether Claude's
-  picks differ from the baseline and how often validation needs a retry.
+- Run `backtest.py --with-model` (12 Claude calls) to see whether Claude's picks beat the baseline over time.
+- Add a check for comparison claims ("highest", "lowest", "deepest") in `validate()`.
