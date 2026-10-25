@@ -1,0 +1,17 @@
+# One ticker per line. SPY is always loaded as the benchmark.
+AAPL
+MSFT
+NVDA
+GOOGL
+AMZN
+JPM
+JNJ
+PG
+KO
+XOM
+WMT
+UNH
+COST
+VZ
+TLT
+GLD

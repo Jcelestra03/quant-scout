@@ -1,0 +1,5 @@
+charset-normalizer==3.5.2
+numpy==2.5.4
+pandas==3.1.0
+tabulate==0.10.0
+yfinance==1.7.0
