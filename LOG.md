@@ -58,6 +58,13 @@ That's one period, not evidence of skill.
   But `validate()` only checks the *numbers* it cites, not words like "highest" or "deepest". That's a gap a
   future check could close by verifying rank claims against the table.
 
+## 2026-10-25: Project page
+- Added `docs/index.html`, a single-file GitHub Pages site styled like a Roblox game page: a blocky
+  hero scene, a green Play button, and tabs for About (Team Code vs Team Claude, the pipeline as
+  "obby stages"), Badges (Claude's picks), Leaderboard (backtest) and How to play.
+- Used the look but not Roblox's logo or name: the corner mark is a generic studded brick.
+- Checked it at desktop and phone width (no sideways scrolling).
+
 ## Next
 - Run `backtest.py --with-model` (12 Claude calls) to see whether Claude's picks beat the baseline over time.
 - Add a check for comparison claims ("highest", "lowest", "deepest") in `validate()`.

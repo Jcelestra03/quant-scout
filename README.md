@@ -5,6 +5,8 @@ Plain Python computes the risk and return statistics for a watchlist. Claude (ru
 with `claude -p`) ranks the stocks for a chosen risk level and explains its picks, and the code
 rejects any answer whose numbers don't match the data.
 
+**Project page:** https://jcelestra03.github.io/quant-scout/
+
 > Educational project. It ranks stocks by *past* statistics, which do not predict future
 > returns. It is not financial advice and it does not trade.
 
